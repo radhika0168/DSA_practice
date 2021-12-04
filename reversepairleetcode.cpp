@@ -1,67 +1,63 @@
-#include<iostream>
+#include<bits/stdc++.h>
 using namespace std;
 
-long long int merge(int* arr, int lb, int ub){
-    int mid = (lb+ub)/2;
-    int n1 = mid-lb+1;
-    int n2 = ub-mid;
-    long long int inv = 0;
-    int a[n1],b[n2];
-    for(int i=0;i<n1;i++){
-        a[i] = arr[lb+i];
-    }
-    for(int i=0;i<n2;i++){
-        b[i] = arr[mid+1+i];
-    }
-    int i=0,j=0,k=lb;
-    while(i<n1 && j<n2){
-        if(a[i]<=b[i]){
-            arr[k] = a[i];
-            k++;
+int merge(int* arr, int start, int mid, int end){
+    long long int inv=0;
+    int i=start;
+    int j=mid+1;
+    int k = start;
+    int b[100];
+
+    while(i<=mid && j<=end){
+        if(arr[i]<=arr[j]){
+            b[k] = arr[i];
             i++;
         }
-        else {
-            arr[k] = a[j];
-            if(a[i]>=2*b[j]){
-                inv+=(n1-i);
+        else{
+            if(arr[i]>=2*arr[j]){
+                inv += (mid-i+1);
             }
+            b[k] = arr[j];
+            j++;
+        }
+        k++;
+    }
+
+    if(i>mid){
+        while(j<=end){
+            b[k] = arr[j];
             k++;j++;
         }
-
-        // else if((a[i]>= 2*b[j]) && (j<n2)){
-        //     arr[k++] = b[j++];
-        //     inv+=(n1-i);
-        // }
-        // else{
-        //     arr[k++] = b[j++];
-        // }
     }
-    while(i<n1){
-        arr[k++] = a[i++];
-    }
-    while(j<n2){
-        arr[k++] = b[j++];
+    else{
+        while(i<=mid){
+            b[k] = arr[i];
+            k++;i++;
+        }
     }
 
+    for(int j=start;j<=end;j++){
+        arr[j] = b[j];
+    }
     return inv;
 }
 
-long long int mergesort(int* arr, int lb, int ub){
-     long long int inv = 0;
-    if(lb<ub){
-        int mid = (lb+ub)/2;
-        inv += mergesort(arr,lb,mid);
-        inv+=mergesort(arr,mid+1,ub);
-        inv+=merge(arr,lb,ub);
+int mergesort(int* arr, int start, int end){
+    long long int inv = 0;
+     if(start<end){
+        int mid = (start+end)/2;
+        mergesort(arr,start,mid);
+        mergesort(arr,mid+1,end);
+        inv += merge(arr,start,mid,end);
     }
     return inv;
 }
 
 int main(){
-    int arr[] = {2,6,3,5,1};
+    int arr[] = {2,4,3,5,1};
     int size = sizeof(arr)/sizeof(int);
-    int inversion = mergesort(arr,0,size-1);
-    cout<<inversion<<"\n";
+    int inv = mergesort(arr,0,size-1);
+    cout<<inv<<"\n";
     for(int i=0;i<size;i++){
         cout<<arr[i]<<" ";
     }

@@ -1,8 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-int merge(int* arr, int start, int mid, int end){
-    long long int inv=0;
+void merge(int* arr, int start, int mid, int end){
     int i=start;
     int j=mid+1;
     int k = start;
@@ -14,9 +13,6 @@ int merge(int* arr, int start, int mid, int end){
             i++;
         }
         else{
-            if(arr[i]>arr[j]){
-                inv += (mid-i+1);
-            }
             b[k] = arr[j];
             j++;
         }
@@ -39,25 +35,21 @@ int merge(int* arr, int start, int mid, int end){
     for(int j=start;j<=end;j++){
         arr[j] = b[j];
     }
-    return inv;
 }
 
-int mergesort(int* arr, int start, int end){
-    static long long int inv = 0;
+void mergesort(int* arr, int start, int end){
      if(start<end){
         int mid = (start+end)/2;
         mergesort(arr,start,mid);
         mergesort(arr,mid+1,end);
-        inv += merge(arr,start,mid,end);
+        merge(arr,start,mid,end);
     }
-    return inv;
 }
 
 int main(){
-    int arr[] = {2,4,1,3,5};
+    int arr[] = {3,5,6,2,2,1,0,7,2};
     int size = sizeof(arr)/sizeof(int);
-    int inv = mergesort(arr,0,size-1);
-    cout<<inv<<"\n";
+    mergesort(arr,0,size-1);
     for(int i=0;i<size;i++){
         cout<<arr[i]<<" ";
     }
